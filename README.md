@@ -45,8 +45,7 @@ docker run --rm -p 8080:8080 i2p-live
 - You’ll see a desktop with Firefox already open to http://127.0.0.1:7657/
 
 ## Example: custom resolution
-```bash
+
 docker run --rm -e RESOLUTION=1600x900 -p 8080:8080 i2p-live
 
 
-##
