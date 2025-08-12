@@ -1,0 +1,45 @@
+{
+  "policies": {
+    "DisableAppUpdate": true,
+    "DisableSystemAddonUpdate": true,
+    "DontCheckDefaultBrowser": true,
+    "CaptivePortal": false,
+    "DNSOverHTTPS": {
+      "Enabled": false
+    },
+    "Proxy": {
+      "Mode": "manual",
+      "Locked": true,
+      "HTTPProxy": "127.0.0.1",
+      "HTTPProxyPort": 4444,
+      "UseHTTPProxyForAllProtocols": true,
+      "SOCKSProxy": "127.0.0.1",
+      "SOCKSProxyPort": 4447,
+      "SOCKSVersion": 5,
+      "Passthrough": ""
+    },
+    "Preferences": {
+      "network.proxy.type":         { "Value": 1, "Status": "locked" },
+      "network.proxy.http":         { "Value": "127.0.0.1", "Status": "locked" },
+      "network.proxy.http_port":    { "Value": 4444, "Status": "locked" },
+      "network.proxy.ssl":          { "Value": "127.0.0.1", "Status": "locked" },
+      "network.proxy.ssl_port":     { "Value": 4444, "Status": "locked" },
+      "network.proxy.ftp":          { "Value": "127.0.0.1", "Status": "locked" },
+      "network.proxy.ftp_port":     { "Value": 4444, "Status": "locked" },
+      "network.proxy.socks":        { "Value": "127.0.0.1", "Status": "locked" },
+      "network.proxy.socks_port":   { "Value": 4447, "Status": "locked" },
+      "network.proxy.socks_version":{ "Value": 5, "Status": "locked" },
+      "network.proxy.no_proxies_on":{ "Value": "", "Status": "locked" },
+      "network.proxy.share_proxy_settings": { "Value": true, "Status": "locked" },
+      "network.proxy.socks_remote_dns": { "Value": true, "Status": "locked" },
+      "network.trr.mode": { "Value": 5, "Status": "locked" },
+      "network.dns.disablePrefetch": { "Value": true, "Status": "locked" },
+      "network.predictor.enabled": { "Value": false, "Status": "locked" },
+      "network.http.speculative-parallel-limit": { "Value": 0, "Status": "locked" },
+      "media.peerconnection.enabled": { "Value": false, "Status": "locked" },
+      "media.peerconnection.ice.no_host": { "Value": true, "Status": "locked" },
+      "media.peerconnection.ice.default_address_only": { "Value": true, "Status": "locked" },
+      "browser.startup.homepage": { "Value": "http://127.0.0.1:7657/", "Status": "locked" }
+    }
+  }
+}
