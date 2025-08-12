@@ -1,3 +1,5 @@
+> ⚡ **Stateless Docker container for instant I2P access with Firefox — GUI or noVNC, privacy-focused, zero persistence.**
+
 # i2p-live
 
 A ready-to-use **stateless** Docker container for instantly accessing the I2P network with Firefox.  
@@ -121,6 +123,6 @@ docker run --rm -p 8080:8080 \
 If you find this project useful and want to support development, you can donate using Monero (XMR):
 
 ```
-xxxxxxxxxxxxxxx
+8AfYtu2AoSWcs9bKZEfPFTdiamJm4HE1tFwFCR1r2FDPFstZ5b7DHBgZYP8W3V44D5HrWH54nCvM1dLcKVC75XMWHhaTxmf
 ```
 *(Privacy-focused, no middlemen, no tracking)*
