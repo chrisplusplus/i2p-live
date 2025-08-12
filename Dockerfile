@@ -4,25 +4,28 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
     I2P_HTTP_PROXY_PORT=4444 \
     I2P_SOCKS_PORT=4447 \
-    FIREFOX_ARGS=""
+    FIREFOX_ARGS="" \
+    RESOLUTION=1280x800 \
+    VNC=0 \
+    VNC_PASSWORD=""
 
-# Minimal runtime for i2pd + Firefox (no VNC)
+# i2pd + Firefox + (optional) VNC stack
 RUN apt-get update && apt-get install -y --no-install-recommends \
     locales ca-certificates wget curl procps tini iptables \
     netcat-openbsd \
-    firefox-esr fonts-dejavu-core \
+    firefox-esr fonts-dejavu-core xdg-utils \
     i2pd \
-    # helpful but small
-    xdg-utils \
+    # VNC / noVNC mode support
+    tigervnc-standalone-server fluxbox novnc websockify \
  && sed -i 's/# \(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen \
  && locale-gen \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Users
+# Users for root-mode separation
 RUN useradd -m -s /bin/bash i2p && \
     useradd -m -s /bin/bash app
 
-# Firefox enterprise policies (lock proxies; no-bypass prefs)
+# Lock Firefox to I2P proxies (enterprise policy + prefs)
 ADD firefox/policies.json /usr/lib/firefox-esr/distribution/policies.json
 ADD firefox/user.js       /etc/firefox-esr/user.js
 
@@ -30,7 +33,7 @@ ADD firefox/user.js       /etc/firefox-esr/user.js
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Stateless intention
+# Intention: all runtime in /tmp (stateless)
 VOLUME ["/tmp"]
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/entrypoint.sh"]
