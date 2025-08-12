@@ -1,120 +1,92 @@
 # i2p-live
-⚡ One-command, stateless I2P browser environment in Docker — **no VNC**.  
-Firefox launches directly on your host display (X11 or Wayland).
 
----
+A ready-to-use **stateless** Docker container for instantly accessing the I2P network using Firefox.  
+Supports both **Direct GUI mode** (X11/Wayland) and **VNC/noVNC mode** for in-browser remote access.
 
-## Overview
-`i2p-live` runs the **i2pd** router and a proxy-locked **Firefox ESR**.  
-It is **stateless**: all data lives in `/tmp` and vanishes when the container stops.  
-
-This variant does **not** use VNC/noVNC — Firefox draws directly to your host’s display.  
-**Linux hosts only** (X11 or Wayland). macOS/Windows require extra X/Wayland tooling.
+All data is stored in `/tmp` inside the container — **nothing is persisted**.  
+When the container stops, all logs, browser data, and router keys are wiped.
 
 ---
 
 ## Features
-- **i2pd (C++ I2P router)** defaults:
-  - HTTP proxy → `127.0.0.1:4444`
-  - SOCKS5 proxy → `127.0.0.1:4447`
-  - Web console → `http://127.0.0.1:7070/`
-- **Firefox ESR** auto-launches to the i2pd console
-- **Proxy locked** — Firefox cannot bypass I2P (enterprise policies)
-- **Optional firewall** — locks Firefox to `localhost` only (requires Docker capabilities)
-- **Stateless** — all configs/logs/history vanish when container stops
-- Supports both:
-  - **Root mode** (firewall possible)
-  - **Non-root mode** (simpler X11 permissions, no firewall)
+- Preconfigured **i2pd** router with HTTP proxy (127.0.0.1:4444)
+- Firefox pre-set to route all traffic through I2P
+- Egress firewall (optional) to block all non-I2P traffic from Firefox
+- Two access modes:
+  - **Direct GUI mode** – launches Firefox on your host display
+  - **VNC/noVNC mode** – run in browser without needing X11
+- Zero persistence (stateless) — privacy by default
 
 ---
 
 ## Build
+
 ```bash
+git clone https://github.com/YOURNAME/i2p-live.git
+cd i2p-live
 docker build -t i2p-live .
 
+
 Run Examples
-IMPORTANT: You must set a GUI environment or the container will refuse to start.
+1. Direct GUI mode (X11 on Linux)
 
-X11: Set DISPLAY and mount /tmp/.X11-unix (plus .Xauthority in root mode)
-
-Wayland: Set MOZ_ENABLE_WAYLAND=1 and mount your Wayland socket
-
-Tip: For X11, run xhost +si:localuser:$(whoami) once per session.
-
-
-1. Root mode (default, allows firewall)
-# X11
-xhost +si:localuser:$(whoami)
+xhost +local:docker   # Allow Docker to use your X11 display
 docker run --rm \
   -e DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
   -v ${XAUTHORITY:-$HOME/.Xauthority}:/tmp/.Xauthority:ro \
   -e XAUTHORITY=/tmp/.Xauthority \
-  i2p-live
-
-
-# Wayland
-docker run --rm \
-  -e MOZ_ENABLE_WAYLAND=1 \
-  -e WAYLAND_DISPLAY \
-  -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/$WAYLAND_DISPLAY \
-  -e XDG_RUNTIME_DIR=/tmp \
-  --device /dev/dri \
-  i2p-live
-
-
-2. Root mode with firewall enabled
-# Restricts Firefox to localhost only — prevents proxy bypass.
-
-xhost +si:localuser:$(whoami)
-docker run --rm \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
-  -e DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ${XAUTHORITY:-$HOME/.Xauthority}:/tmp/.Xauthority:ro \
-  -e XAUTHORITY=/tmp/.Xauthority \
   i2p-live
 
-3. Non-root mode (no firewall, simpler X11)
-xhost +si:localuser:$(whoami)
-docker run --rm \
-  --user $(id -u):$(id -g) \
-  -e DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ${XAUTHORITY:-$HOME/.Xauthority}:/tmp/.Xauthority:ro \
-  -e XAUTHORITY=/tmp/.Xauthority \
-  i2p-live
 
-4. Non-root mode on Wayland
+Firefox will open directly on your desktop with I2P running in the background.
+If you omit --cap-add=..., the firewall restriction will be disabled (you’ll get a warning).
+
+2. Direct GUI mode (Wayland)
+
 docker run --rm \
-  --user $(id -u):$(id -g) \
   -e MOZ_ENABLE_WAYLAND=1 \
-  -e WAYLAND_DISPLAY \
   -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/$WAYLAND_DISPLAY \
-  -e XDG_RUNTIME_DIR=/tmp \
-  --device /dev/dri \
+  -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
+  --cap-add=NET_ADMIN --cap-add=NET_RAW \
   i2p-live
 
-5. Kiosk mode (root mode, X11)
-xhost +si:localuser:$(whoami)
-docker run --rm \
-  -e DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v ${XAUTHORITY:-$HOME/.Xauthority}:/tmp/.Xauthority:ro \
-  -e XAUTHORITY=/tmp/.Xauthority \
-  -e FIREFOX_ARGS="--kiosk" \
+3. VNC/noVNC mode (no X11/Wayland required)
+
+docker run --rm -p 8080:8080 -e VNC=1 \
+  --cap-add=NET_ADMIN --cap-add=NET_RAW \
+  i2p-live
+
+
+Then open:
+
+
+http://localhost:8080
+
+This loads the noVNC web UI and connects to the container’s Firefox session.
+
+4. VNC mode with password & custom resolution
+
+docker run --rm -p 8080:8080 \
+  -e VNC=1 \
+  -e VNC_PASSWORD=mysecret \
+  -e RESOLUTION=1440x900 \
   i2p-live
 
 Security Notes
-Firefox’s proxy is locked via enterprise policies; bypass list is empty.
+Firewall restriction for Firefox only works if container runs as root and with --cap-add=NET_ADMIN --cap-add=NET_RAW.
 
-DoH/TRR, DNS prefetch, and QUIC disabled.
+Without firewall, Firefox could bypass I2P if settings are changed.
 
-WebRTC disabled to prevent IP leaks.
+All data is stored in /tmp inside container and wiped on exit.
 
-Optional firewall (--cap-add=NET_ADMIN --cap-add=NET_RAW) restricts Firefox user to localhost.
+Quick One-Liner
+Start in noVNC mode with firewall:
 
-i2pd router user (i2p) has full outbound access for peer traffic.
+docker run --rm -p 8080:8080 -e VNC=1 \
+  --cap-add=NET_ADMIN --cap-add=NET_RAW \
+  i2p-live
 
-
+Then open http://localhost:8080 and browse I2P.
 
