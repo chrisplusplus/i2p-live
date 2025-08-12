@@ -11,13 +11,16 @@ user_pref("network.proxy.socks_version", 5);
 user_pref("network.proxy.no_proxies_on", "");
 user_pref("network.proxy.share_proxy_settings", true);
 user_pref("network.proxy.socks_remote_dns", true);
+
 user_pref("network.dns.disablePrefetch", true);
 user_pref("network.predictor.enabled", false);
 user_pref("network.http.speculative-parallel-limit", 0);
 user_pref("network.trr.mode", 5);
 user_pref("network.http.http3.enabled", false);
+
 user_pref("media.peerconnection.enabled", false);
 user_pref("media.peerconnection.ice.no_host", true);
 user_pref("media.peerconnection.ice.default_address_only", true);
-user_pref("browser.startup.homepage", "http://127.0.0.1:7657/");
+
+user_pref("browser.startup.homepage", "http://127.0.0.1:7070/");
 user_pref("browser.shell.checkDefaultBrowser", false);
