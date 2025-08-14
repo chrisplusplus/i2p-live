@@ -13,6 +13,9 @@ Supports both **Direct GUI mode** (X11/Wayland) and **VNC/noVNC mode** for in-br
 ## 🚀 Quick Start (noVNC mode with firewall)
 
 ```bash
+git clone https://github.com/chrisplusplus/i2p-live.git
+cd i2p-live
+docker build -t i2p-live .
 docker run --rm -p 8080:8080 -e VNC=1 -e I2PD_ARGS="--ssu false --ntcp2 true" i2p-live
 ```
 
