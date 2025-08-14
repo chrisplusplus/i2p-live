@@ -90,10 +90,7 @@ docker run --rm -p 8080:8080 \
 ```
 If your network blocks UDP, run TCP-only:
 ```bash
-docker run --rm -p 8080:8080 \
-  -e VNC=1 \
-  -e I2PD_ARGS="--ssu false --ntcp2 true" \
-  i2p-live
+docker run --rm -p 8080:8080 -e VNC=1 -e I2PD_ARGS="--ssu false --ntcp2 true" i2p-live
 ```
 
 
