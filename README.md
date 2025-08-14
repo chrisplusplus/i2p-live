@@ -13,10 +13,7 @@ Supports both **Direct GUI mode** (X11/Wayland) and **VNC/noVNC mode** for in-br
 ## 🚀 Quick Start (noVNC mode with firewall)
 
 ```bash
-docker run --rm -p 8080:8080 \
-  -e VNC=1 \
-  --cap-add=NET_ADMIN --cap-add=NET_RAW \
-  i2p-live
+docker run --rm -p 8080:8080 -e VNC=1 -e I2PD_ARGS="--ssu false --ntcp2 true" i2p-live
 ```
 
 Then open: [http://localhost:8080](http://localhost:8080)  
@@ -82,17 +79,10 @@ docker run --rm \
 
 ### 3. VNC/noVNC Mode (No X11/Wayland Required)
 
-```bash
-docker run --rm -p 8080:8080 \
-  -e VNC=1 \
-  --cap-add=NET_ADMIN --cap-add=NET_RAW \
-  i2p-live
-```
 If your network blocks UDP, run TCP-only:
 ```bash
 docker run --rm -p 8080:8080 -e VNC=1 -e I2PD_ARGS="--ssu false --ntcp2 true" i2p-live
 ```
-
 
 Then open:  
 [http://localhost:8080](http://localhost:8080)  
