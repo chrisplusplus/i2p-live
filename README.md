@@ -88,6 +88,14 @@ docker run --rm -p 8080:8080 \
   --cap-add=NET_ADMIN --cap-add=NET_RAW \
   i2p-live
 ```
+If your network blocks UDP, run TCP-only:
+```bash
+docker run --rm -p 8080:8080 \
+  -e VNC=1 \
+  -e I2PD_ARGS="--ssu false --ntcp2 true" \
+  i2p-live
+```
+
 
 Then open:  
 [http://localhost:8080](http://localhost:8080)  
